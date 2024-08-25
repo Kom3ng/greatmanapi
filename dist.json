@@ -268,7 +268,7 @@
                         "type": "string",
                         "nullable": false
                       },
-                      "data": {
+                      "date": {
                         "type": "string",
                         "format": "date-time",
                         "description": "创建日期",
