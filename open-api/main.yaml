@@ -1,0 +1,382 @@
+openapi: 3.0.2
+info:
+  title: Great Man API
+  version: '1.0'
+  description: "great man api"
+  contact:
+    name: Astrack
+    url: https://astrack.me
+    email: admin@astrack.me
+  license:
+    name: MIT
+    url: https://mit-license.org/
+servers:
+- url: https://greatapi.astrack.me/v0
+  description: Server
+  
+paths:
+  /men:
+    get:
+      operationId: gerMen
+      description: '获取伟人id'
+      parameters: 
+        - schema: 
+            type: number
+          in: query
+          name: limit
+          example: 10
+          description: 限制数量,最大20
+          required: true
+        - schema: 
+            type: number
+          in: query
+          name: page
+          description: 页数
+          required: true
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                description: id列表
+                items: 
+                  type: number
+  /man/{id}:
+    get: 
+      operationId: getMan
+      parameters:
+        - schema: 
+            type: number
+          name: id 
+          in: path 
+          required: true
+          description: 伟人ID 
+        - schema: 
+            type: string
+          in: query
+          name: lang
+          description: 语言
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: 姓名
+                    nullable: false
+                  comment:
+                    type: string
+                    description: 评论
+                    nullable: true
+                  headImgUrl:
+                    type: string
+                    format: uri
+                    description: 头图
+                    nullable: true
+
+    put:
+      operationId: updateMan
+      security:
+        - auth: []
+      parameters:
+        - schema: 
+            type: number
+          name: id 
+          in: path 
+          required: true
+          description: 伟人ID
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                headImgUrl: 
+                  type: string
+                  format: uri
+                  nullable: true
+                  description: 头图
+                manInfos:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      language:
+                        type: string
+                        description: 语言
+                        nullable: false
+                      name:
+                        type: string
+                        description: 姓名
+                        nullable: false
+                      comment:
+                        type: string
+                        description: 评论
+                        nullable: true
+      responses:
+        '200':
+          description: OK
+
+    delete:
+      operationId: deleteMan
+      security:
+        - auth: []
+      parameters:
+        - schema: 
+            type: string
+          name: id 
+          in: path
+          required: true
+      responses:
+        '200':
+          description: OK
+
+  /man/{id}/talks:
+    get:
+      operationId: getTalks
+      parameters:
+        - schema: 
+            type: number
+          in: path
+          name: id 
+          required: true
+        - schema: 
+            type: number
+          in: query
+          name: limit
+          required: true
+        - schema: 
+            type: number
+          name: page
+          in: query
+          required: true
+        - schema: 
+            type: string
+          name: lang
+          in: query
+        - schema: 
+            type: string
+          name: type
+          in: query
+          description: 讲话类型
+          required: false
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: object
+                  properties:
+                    id: 
+                      type: number
+                      nullable: false
+                    title:
+                      type: string
+                      nullable: false
+                    data: 
+                      type: string
+                      format: date-time
+                      description: 创建日期
+                      nullable: false
+  /talk/{id}/content:
+    get:
+      operationId: getTalkContent
+      parameters:
+        - schema: 
+            type: string
+          name: lang 
+          in: query
+        - schema:
+            type: number
+          name: id 
+          in: path
+          required: true
+      responses:
+        '200': 
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  title:
+                    type: string
+                    nullable: false
+                  content: 
+                    type: string
+                    description: 主体部分文字
+                    nullable: false
+                  interviwer:
+                    type: string
+                    description: 记者信息
+                    nullable: true
+                  source:
+                    type: string
+                    description: 来源
+                    nullable: true
+                  attachments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type: 
+                          type: string
+                          description: 附件类型
+                          example: video
+                          nullable: false
+                        value:
+                          type: string
+                          description: 附件内容, 可以能是文件链接等
+                          nullable: false
+  /man:
+    post:
+      operationId: createNewMan
+      description: 新建伟人
+      security:
+        - auth: []
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                headImgUrl:
+                  type: string
+                  format: uri
+                  nullable: true
+                manInfos:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      language:
+                        type: string
+                        nullable: false
+                      name:
+                        type: string
+                        nullable: false
+                      comment: 
+                        type: string
+                        nullable: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: number
+                description: 创建的伟人id 
+  /man/{id}/talk: 
+    post: 
+      operationId: newTalk
+      security:
+        - auth: []
+      parameters:
+        - schema: 
+            type: number
+          in: path
+          name: id
+          required: true
+      requestBody: 
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Talk'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: number
+                description: 创建的talk的id
+  /talk/{id}: 
+    put: 
+      operationId: updateTalk
+      security:
+        - auth: []
+      parameters:
+        - schema: 
+            type: number
+          in: path
+          required: true
+          name: id
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Talk'
+      responses:
+        '200':
+          description: OK
+    delete: 
+      operationId: deleteTalk
+      security:
+        - auth: []
+      parameters:
+        - schema: 
+            type: number
+          in: path
+          required: true
+          name: id
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas: 
+    Talk:  
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: false
+        talkContents:
+          type: array
+          items:
+            type: object
+            properties:
+              language:
+                type: string
+                nullable: false
+              title: 
+                type: string
+                nullable: false
+              mainBody: 
+                type: string
+                nullable: false
+              interviwer:
+                type: string
+                nullable: true
+              source: 
+                type: string
+                nullable: true
+        attachments:
+          type: array
+          items: 
+            type: object
+            properties:
+              type: 
+                type: string
+                nullable: false
+              value:
+                type: string
+                nullable: false
+  securitySchemes: 
+    auth:
+      type: http
+      scheme: basic
+  responses: {}
+  parameters: {}
+

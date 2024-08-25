@@ -1,0 +1,14 @@
+{
+  "name": "greatmanapi",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "openapi-merge-cli --config config.json"
+  },
+  "keywords": [],
+  "author": "Astrack",
+  "license": "MIT",
+  "dependencies": {
+    "openapi-merge-cli": "^1.3.2"
+  }
+}
