@@ -225,6 +225,10 @@ paths:
                     type: string
                     description: 来源
                     nullable: true
+                  date:
+                    type: string
+                    format: date-time
+                    nullable: false
                   attachments:
                     type: array
                     items:
