@@ -217,7 +217,7 @@ paths:
                     type: string
                     description: 主体部分文字
                     nullable: false
-                  interviwer:
+                  interviewer:
                     type: string
                     description: 记者信息
                     nullable: true
@@ -360,7 +360,7 @@ components:
               mainBody: 
                 type: string
                 nullable: false
-              interviwer:
+              interviewer:
                 type: string
                 nullable: true
               source: 
